@@ -1,0 +1,89 @@
+BuyIn:
+    'buy-in' '(' chips=INT ')' ':'
+        functions*=Function
+    'stand'
+;
+
+Function:
+    Pillars | Instruments | Wheels
+;
+
+
+Pillars:
+    ForLoop | WhileLoop | IfStatement | VariableDeclaration | Returns
+;
+
+ ForLoop:
+    'For' '(' var=ID 'in' range_expr=Range ')' '{' 
+        body*=Function 
+    '}';
+
+WhileLoop:
+    'While' '(' condition=Expression ')' '{' body*=Function '}';
+
+IfStatement:
+    'If' '(' condition=Expression ')' '{' body*=Function '}' ('else' ':' body*=Function)?;
+
+Suite:
+    body*=Function;
+
+VariableDeclaration:
+    name=ID '=' value=Expression;
+
+UserFunctionDef:
+    name=ID '(' params*=ID[','] ')' '{' body*=Function '}';
+
+Returns:
+    'Return' value=Expression;   
+
+Range:
+    'range' '(' start=INT ',' end=INT (',' step=INT)? ')';
+
+
+Instruments:
+    Call | Calculation | Roulette
+;
+
+Call:
+    'call' '(' calling=Expression ')' Endings;
+
+Calculation:
+    'calc' '(' calculation=Expression ',' bet=ID ')' Endings ;
+
+Roulette:
+    'Roulette' name =ID '=' '[' elements +=Expression[','] ']';
+
+Wheels:
+    NonParamFunction | ParamFunction
+;
+
+NonParamFunction:
+    name=ID '(' ')' Endings;
+
+ParamFunction:
+    name=ID '(' params*=Expression[','] ')' Endings;
+
+
+Endings:
+    Blinds | Laws ;
+
+Blinds:
+    '$'+;
+
+Laws:
+    '!';
+
+Expression:
+    AddExpr;
+
+AddExpr:
+    MulExpr (('+' | '-') MulExpr)*;
+
+MulExpr:
+    Factor (('*' | '/') Factor)*;
+
+Factor:
+    INT | ID | '(' Expression ')';
+
+
+

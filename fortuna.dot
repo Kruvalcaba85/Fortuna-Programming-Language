@@ -1,0 +1,87 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+1535498030832[ label="{BuyIn|chips: INT\l}"]
+
+1535498037168[ label="{*Function|}"]
+
+1535498173568[ label="{*Pillars|}"]
+
+1535498173328[ label="{ForLoop|var: ID\l}"]
+
+1535498173376[ label="{WhileLoop|condition: Expression\l}"]
+
+1535498173472[ label="{IfStatement|condition: Expression\l}"]
+
+1535498161136[ label="{Suite|}"]
+
+1535498173616[ label="{VariableDeclaration|name: ID\lvalue: Expression\l}"]
+
+1535498172080[ label="{UserFunctionDef|name: ID\lparams: optional\<list[ID]\>\l}"]
+
+1535498173808[ label="{Returns|value: Expression\l}"]
+
+1535498173856[ label="{Range|start: INT\lend: INT\lstep: INT\l}"]
+
+1535498174000[ label="{*Instruments|}"]
+
+1535498307488[ label="{Call|calling: Expression\l}"]
+
+1535498306624[ label="{Calculation|calculation: Expression\l}"]
+
+1535498306288[ label="{Roulette|name: ID\lelements: list[Expression]\l}"]
+
+1535498306672[ label="{*Wheels|}"]
+
+1535498305808[ label="{NonParamFunction|name: ID\l}"]
+
+1535498305616[ label="{ParamFunction|name: ID\lparams: optional\<list[ID]\>\l}"]
+
+
+
+1535498030832 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="functions 0..*"]
+1535498037168 -> 1535498173568 [dir=back]
+1535498037168 -> 1535498174000 [dir=back]
+1535498037168 -> 1535498306672 [dir=back]
+1535498173568 -> 1535498173328 [dir=back]
+1535498173568 -> 1535498173376 [dir=back]
+1535498173568 -> 1535498173472 [dir=back]
+1535498173568 -> 1535498173616 [dir=back]
+1535498173568 -> 1535498173808 [dir=back]
+1535498173328 -> 1535498173856[arrowtail=diamond, dir=both, headlabel="range_expr "]
+1535498173328 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+1535498173376 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+1535498161136 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+1535498172080 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+1535498174000 -> 1535498307488 [dir=back]
+1535498174000 -> 1535498306624 [dir=back]
+1535498174000 -> 1535498306288 [dir=back]
+1535498306672 -> 1535498305808 [dir=back]
+1535498306672 -> 1535498305616 [dir=back]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>Blinds</b></td><td>Blinds</td>
+	</tr>
+	<tr>
+		<td><b>Endings</b></td><td></td>
+	</tr>
+	<tr>
+		<td><b>Expression</b></td><td>[a-zA-Z0-9_+\-*\/\(\)]+</td>
+	</tr>
+	<tr>
+		<td><b>Laws</b></td><td>!</td>
+	</tr>
+</table> >]
+
+
+}

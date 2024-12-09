@@ -1,0 +1,111 @@
+Buy-in(100):
+    call("Hello World")$
+    check()x
+stand
+
+
+Output:
+Success!
+Hello World
+Account balance: 105 chips
+
+or 
+
+Fail! Did not print.
+Account balance: 95 chips
+
+
+
+
+Buy-in(100):
+    call("Demonstrating variables and arithmetic")! //15 chip cost
+
+    first_operand = 5$ //1 chip cost
+    second_operand = 10$ //1 chip cost
+
+    //variable assingnment adds 1 chip to total cost
+    //calc game original cost: 10, pays 1:1 but with double blind ($$) costs 20 but pays 1:2
+    result = calc(first_operand + second_operand, over)$$ //if win: 60 chips - 1 chip due to variable assingment
+
+    call(result)$ //if win: 5 chip payout and output
+    check()x      //checking account is free, denoted by x at end
+stand
+
+Luckiest Output:
+Success!
+Demonstrating variables and arithmetic
+Calculation has begun.
+Over was correct!! Payout: 60 chips
+15
+Account Balance: 127 chips 
+
+
+
+Buy-in(1000):
+    call("Demonstrating all three functions: Pillars, Instruments, and Wheels)!
+
+    //use a wheel with pillar to potentially gather chips
+    //21 costs 100 (1:1 pay) with small blind, big blind costs 300 (1:2 pay)
+    if(21()$$):
+        call("Made it inside the if statement!")!  //lawful call, 15 chips cost
+        Horse(2)$ //horse costs 200, pays 1:1
+        Baccarat(Player)$ //baccarat costs 150, pays 1:1
+        Poker(3)$$$ //Mega blind Poker costs 400 pays 1:3
+    cap 
+    //subtract 1 from balance due to using if statement
+
+    balance = check()$ //when assigning a variable with check, cost is 1 chip
+
+    if(balance >= 1000):
+        for i in range(4):
+            //4 lawful calls + 1 chip per for = 64 chips
+            call("Printing just because I have so much money!")!  
+    else:
+        call("Printing to get some money back!")$$$ // mega blind call will costs 300, payouts 1:1
+    cap
+
+    check()
+stand
+Average Output:
+Demonstrating all three functions: Pillars, Instruments, and Wheels
+21 has begun.
+Dealer Face card: 7
+Player's Hand: Q, 8 (18)
+Standing.
+Dealer's turn:
+Dealer's Face Down card: K
+18 > 17. Player wins!
+Made it inside the the if statement!
+Horse Race Has begun.
+Player has bet on horse 2.
+Horse 3 won. Player lost.
+Baccarat has begun.
+Player has made a Player's bet.
+...
+Player's bet won! Player Won!!
+Poker has begun.
+Player is up against 1 other hand(s). Player is H1.
+H1: Pair 
+H2: Full House
+Player has lost!
+Sucess!
+Printing just because I have so much money!
+Sucess!
+Printing just because I have so much money!
+Sucess!
+Printing just because I have so much money!
+Sucess!
+Printing just because I have so much money!
+Account balance: 1055 chips
+
+
+    
+
+
+
+
+
+
+
+
+    
