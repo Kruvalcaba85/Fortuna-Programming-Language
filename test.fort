@@ -10,4 +10,5 @@ buy-in(100):
     Test()$
     Poker(2)$
     Blackjack()$
+    HorseRace(2)$
 stand

@@ -1,5 +1,5 @@
 from textx import metamodel_from_file
-import os
+import time
 import sys
 import random
 from collections import Counter
@@ -159,9 +159,13 @@ def interpret_param(param, dict):
     name = param.name
     if name == "Poker":
         interpret_Poker(param, dict)
+    elif name == "HorseRace":
+        horse_Race(param)
     else:
         print("Still worked!")
 
+
+# Poker Implementation
 def interpret_Poker(param, dict):
     hands = param.params[0]
     deck = create_deck()
@@ -245,6 +249,7 @@ def compare_hands(hands):
     else:
         print("User lost!")
 
+# Black jack Implementation
 def black_jack():
     player_value = random.randint(2, 21)
     dealer_value = random.randint(2, 21)
@@ -311,7 +316,38 @@ def calculate_value(hand):
     
     return total
 
-    
+ # Horse Race Implmentation
+def horse_Race(player_horse):
+   num_horses = 7
+   horses = [0] * num_horses
+   race_distance = 25
+
+   print("Horse Race has begun!")
+
+    #keep race going
+   while True:
+    #update position of horse
+    for i in range(num_horses):
+        horses[i] += random.randint(1, 3)
+
+    for i, position in enumerate(horses):
+        if position >= race_distance:
+            print(f"Horse {i + 1} beats the race at {position} meters!")
+            print(f"Horse {i + 1} wins!")
+            if i == player_horse:
+                print("Player won!")
+            else:
+                print("player lost!")
+            return
+        
+    winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
+    print(f"\nHorse {winning_horse + 1} is in the lead at {highest_position} meters...")
+    time.sleep(2)
+        
+
+           
+
+        
 
     
 if __name__ == "__main__":
