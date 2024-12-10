@@ -16,8 +16,7 @@ def load_model(file_name):
 
 #starting point. This will load the mdoel and interpet the functions inside the file
 def start():
-    print("Welcome to Citadel! This is where you interpret your Fortuna",
-          "files.")
+    print("Welcome to Citadel! This is where you interpret your Fortuna files.")
     #file_name = input("Please give us the name of your Fortuna File: ")
 
     model = load_model("yes")
@@ -152,6 +151,8 @@ def interpret_nonparam(nonparam):
     name = nonparam.name
     if name == "Test":
         print("Hello!")
+    elif name == "Blackjack":
+        black_jack()
 
 
 def interpret_param(param, dict):
@@ -239,9 +240,78 @@ def compare_hands(hands):
     print(f"The winning hand is: {winning_hand}")
     print(f"The hand type is: {hand_type[winning_rank[0]]}")
 
+    if hands[0] == winning_hand:
+        print("User won!")
+    else:
+        print("User lost!")
+
 def black_jack():
-    deck = create_deck()
-    shuffle_deck(deck)
+    player_value = random.randint(2, 21)
+    dealer_value = random.randint(2, 21)
+
+    print(f"{player_value} and {dealer_value}")
+
+    if player_value == 21 and dealer_value == 21:
+        print("Tie!")
+        return
+    elif player_value == 21:
+        print("BlackJack!")
+        return
+    elif dealer_value == 21:
+        print("Dealer Blackjack!")
+        return
+
+    while player_value < 17:
+            player_value += random.randint(1, 11)
+    
+    print(f"Player value: {player_value} ")
+    if player_value == 21:
+        print("Blackjack!")
+        return
+    elif player_value > 21:
+        print("Bust!")
+        return
+    
+    while dealer_value < 17:
+        dealer_value += random.randint(1, 11)
+    
+    print(f"Delear value: {dealer_value}")
+    if dealer_value == 21:
+        print("Dealer Blackjack!")
+        return
+    elif dealer_value > 21:
+        print("Dealear Bust!")
+        return
+    
+    if player_value > dealer_value:
+        print("Player win!")
+    elif player_value == dealer_value:
+        print("Tie!")
+    else:
+        print("Dealer Won!")
+
+
+def calculate_value(hand):
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+                   '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 11}
+    
+    total = 0
+    ace_count = 0
+
+    for card in hand:
+        rank = card.split()[0]
+        total += rank_values[rank]
+
+        if rank == 'A':
+            ace_count += 1
+    
+    while total > 21 and ace_count > 0:
+        total -= 10
+        ace_count -= 1
+    
+    return total
+
+    
 
     
 if __name__ == "__main__":

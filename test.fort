@@ -9,4 +9,5 @@ buy-in(100):
     calc(5 + 1, bullseye)$
     Test()$
     Poker(2)$
+    Blackjack()$
 stand
