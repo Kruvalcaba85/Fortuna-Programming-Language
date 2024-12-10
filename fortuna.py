@@ -161,6 +161,8 @@ def interpret_param(param, dict):
         interpret_Poker(param, dict)
     elif name == "HorseRace":
         horse_Race(param)
+    elif name == "Baccarat":
+        baccarat(param)
     else:
         print("Still worked!")
 
@@ -295,27 +297,6 @@ def black_jack():
     else:
         print("Dealer Won!")
 
-
-def calculate_value(hand):
-    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
-                   '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 11}
-    
-    total = 0
-    ace_count = 0
-
-    for card in hand:
-        rank = card.split()[0]
-        total += rank_values[rank]
-
-        if rank == 'A':
-            ace_count += 1
-    
-    while total > 21 and ace_count > 0:
-        total -= 10
-        ace_count -= 1
-    
-    return total
-
  # Horse Race Implmentation
 def horse_Race(player_horse):
    num_horses = 7
@@ -334,7 +315,7 @@ def horse_Race(player_horse):
         if position >= race_distance:
             print(f"Horse {i + 1} beats the race at {position} meters!")
             print(f"Horse {i + 1} wins!")
-            if i == player_horse:
+            if i + 1 == player_horse:
                 print("Player won!")
             else:
                 print("player lost!")
@@ -343,8 +324,56 @@ def horse_Race(player_horse):
     winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
     print(f"\nHorse {winning_horse + 1} is in the lead at {highest_position} meters...")
     time.sleep(2)
-        
 
+#baccarat implementation
+def draw_card():
+    """Draw a card with values between 1 and 9, inclusive."""
+    return random.randint(1, 9)
+
+def calculate_score(hand):
+    """Calculate the Baccarat score of a hand."""
+    return sum(hand) % 10
+
+def baccarat(bet):
+    # Initial hands
+    player_hand = [draw_card(), draw_card()]
+    banker_hand = [draw_card(), draw_card()]
+
+    print(f"Player's cards: {player_hand}, Score: {calculate_score(player_hand)}")
+    print(f"Banker's cards: {banker_hand}, Score: {calculate_score(banker_hand)}")
+
+    player_score = calculate_score(player_hand)
+    banker_score = calculate_score(banker_hand)
+
+    # Simplified third card rule
+    if player_score < 6:
+        player_hand.append(draw_card())
+        player_score = calculate_score(player_hand)
+        print(f"Player draws a card: {player_hand[-1]}. New score: {player_score}")
+
+    if banker_score < 6:
+        banker_hand.append(draw_card())
+        banker_score = calculate_score(banker_hand)
+        print(f"Banker draws a card: {banker_hand[-1]}. New score: {banker_score}")
+
+    print(f"Final Player's hand: {player_hand}, Score: {player_score}")
+    print(f"Final Banker's hand: {banker_hand}, Score: {banker_score}")
+
+    # Determine winner
+    if player_score > banker_score:
+        print("Player bet wins!")
+        if bet == "Player":
+            print("User won!") 
+        else:
+            print("Loss")
+    elif banker_score > player_score:
+        print("Banker wins!")
+        if bet == "Banker":
+            print("User Won!")
+        else:
+            print("Loss!")
+    else:
+        print("It's a tie!")    
            
 
         

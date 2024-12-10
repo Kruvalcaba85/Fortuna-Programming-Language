@@ -11,4 +11,5 @@ buy-in(100):
     Poker(2)$
     Blackjack()$
     HorseRace(2)$
+    Baccarat(Player)$
 stand
