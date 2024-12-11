@@ -29,9 +29,8 @@ def start():
             interpreter(function, dict) #main interpreter
 
 def check_chips(current_balance):
-    print(current_balance)
     if current_balance <= 0:
-        print("ERGGG no money!!!")
+        print("\033[31mBankrupt! Ran out of Chips!!\033[0m")
         sys.exit()
     else:
         return True 
@@ -60,25 +59,21 @@ def interpreter(function, dict):
 
 #interpetting pillars
 def interpret_for(for_loop, dict):
-    print("entered for")
-    for_cost = 5
+    for_cost = 50
     dict["chips"] -= for_cost 
     start = for_loop.range_expr.start
-    print(start)
     end = for_loop.range_expr.end
-    print(end)
     step = for_loop.range_expr.step if for_loop.range_expr.step else 1
 
     for i in range(start, end, step):
         dict[for_loop.var] = i
-        dict["chips"] -= i
+        dict["chips"] -= i * 5
         if check_chips(dict["chips"]):
             for function in for_loop.body:
                 interpreter(function, dict)
 
 def interpret_while(while_loop, dict):
-    print("entered while")
-    while_cost = 5
+    while_cost = 20
     condition = eval(while_loop.condition, {}, dict)
     while condition:
         dict["chips"] -= while_cost
@@ -89,16 +84,11 @@ def interpret_while(while_loop, dict):
             condition = eval(while_loop.condition, {}, dict)
 
 def interpret_if(if_statement, dict):
-    print("entered if")
-    if_cost = 1
-    print(if_statement.condition)
+    if_cost = 30
     condition = eval(if_statement.condition, {}, dict)
     if condition:
-        print("entered here")
         dict["chips"] -= if_cost
         if check_chips(dict["chips"]):
-                print("entered here?")
-                print(if_statement.body)
                 for function in if_statement.body:
                     interpreter(function, dict)
     elif if_statement.else_body:
@@ -108,7 +98,7 @@ def interpret_if(if_statement, dict):
                 interpreter(function, dict)
 
 def interpet_var(variable_declaration, dict):
-    var_cost = 3
+    var_cost = 1
     value = variable_declaration.value
     dict[variable_declaration.name] = value
     dict["chips"] -= var_cost
@@ -230,10 +220,10 @@ def interpret_access(access, dict):
                 colors = ['green', 'red', 'black']
                 color_choice = random.choice(colors)
                 if color_choice == color:
-                    print("Sucessful spin!")
+                    print("\033[33mSuccessful Spin!.\033[0m")
                     print(f"{elements[index]}")
                 else:
-                    print("Spin unsuccessful.")
+                    print("\033[31mSpin unsuccessful.\033[0m")
         else:
             print("Array does not exist")
     else:
@@ -252,7 +242,6 @@ def interpret_nonparam(nonparam, dict):
 
 def interpret_param(param, dict):
     name = param.name
-    print(name)
     if name == "Poker":
         interpret_Poker(param, dict)
     elif name == "HorseRace":
@@ -262,16 +251,17 @@ def interpret_param(param, dict):
     elif name == "call":
         interpret_call(param, dict)
     else:
-        print("Still worked!")
+        print("Invalid function.")
 
 
 def check_balance(dict):
     chips = dict["chips"]
     user_balance = dict["balance"] + chips
-    print(f"You have earned: {chips} chips. Your total balance is {user_balance}.")
+    print(f"Your chip count is: {chips}. Your total balance is {user_balance}.")
 
 # Poker Implementation
 def interpret_Poker(param, dict):
+    print("\033[32mPoker!\033[0m")
     if param.ending.startswith("$"):
         dict["chips"] -= 50 * param.ending.count("$")
         check_chips(dict["chips"])
@@ -357,14 +347,16 @@ def compare_hands(hands, dict, earnings):
     print(f"The hand type is: {hand_type[winning_rank[0]]}")
 
     if hands[0] == winning_hand:
-        print("You won!")
+        print("\033[33mYou won!\033[0m")
+        print(f"Earned: {earnings} chips.")
         dict["chips"] += earnings
 
     else:
-        print("You lost!")
+        print("\033[31mYou lost!\033[0m")
 
 # Black jack Implementation
 def black_jack(nonparam, dict):
+    print("\033[32mBlackJack!\033[0m")
     if nonparam.ending.startswith("$"):
         dict["chips"] -= 75 * nonparam.ending.count("$")
         check_chips(dict["chips"])
@@ -380,11 +372,12 @@ def black_jack(nonparam, dict):
             dict["chips"] += 75
             return
         elif player_value == 21:
-            print("BlackJack!")
+            print("\033[33mBlackJack!\033[0m")
+            print(f"You earned: {earnings} chips.")
             dict["chips"] += earnings
             return
         elif dealer_value == 21:
-            print("Dealer Blackjack!")
+            print("\033[31mDealer Blackjack.\033[0m")
             return
 
         while player_value < 17:
@@ -392,12 +385,12 @@ def black_jack(nonparam, dict):
         
         print(f"Player value: {player_value} ")
         if player_value == 21:
-            print("Blackjack!")
-            print("Win!")
+            print("\033[33mBlackJack!\033[0m")
+            print(f"You earned: {earnings} chips.")
             dict["chips"] += earnings
             return
         elif player_value > 21:
-            print("Bust!")
+            print("\033[31mBust.\033[0m")
             return
         
         while dealer_value < 17:
@@ -405,21 +398,23 @@ def black_jack(nonparam, dict):
         
         print(f"Delear value: {dealer_value}")
         if dealer_value == 21:
-            print("Dealer Blackjack!")
+            print("\033[31mDealer Blackjack.\033[0m")
             return
         elif dealer_value > 21:
-            print("Dealear Bust!")
+            print("\033[33mDealer Bust!\033[0m")
+            print(f"You earned: {earnings} chips.")
             dict["chips"] += earnings
             return
         
         if player_value > dealer_value:
-            print("Player win!")
+            print("\033[33mPlayer Win!\033[0m")
+            print(f"You earned: {earnings} chips.")
             dict["chips"] += earnings
         elif player_value == dealer_value:
             print("Tie!")
-            dict["chips"] += 75
+            dict["chips"] += 75 * nonparam.ending.count("$")
         else:
-            print("Dealer Won!")
+            print("\033[31mDealer won.\033[0m")
     else:
         print("wrong ending.")
 
@@ -434,7 +429,7 @@ def horse_Race(player_horse, dict):
     horses = [0] * num_horses
     race_distance = 25
 
-    print("Horse Race has begun!")
+    print("\033[32mHorse Race has begun!\033[0m")
 
         #keep race going
     while True:
@@ -446,12 +441,12 @@ def horse_Race(player_horse, dict):
             if position >= race_distance:
                 print(f"Horse {i + 1} beats the race at {position} meters!")
                 print(f"Horse {i + 1} wins!")
-                print(player_horse.params)
                 if i + 1 in player_horse.params:
-                    print("Player won!")
+                    print("\033[33mPlayer Horse won!\033[0m")
+                    print(f"You earned: {earnings} chips.")
                     dict["chips"] += earnings
                 else:
-                    print("player lost!")
+                    print("\033[31mPlayer horse lost.\033[0m")
                 return
             
         winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
@@ -468,6 +463,7 @@ def calculate_score(hand):
     return sum(hand) % 10
 
 def baccarat(bet, dict):
+    print("\033[32mBaccarat!\033[0m")
     if bet.ending.startswith("$"):
         dict["chips"] -= 60 * bet.ending.count("$")
         check_chips(dict["chips"])
@@ -501,17 +497,19 @@ def baccarat(bet, dict):
         if player_score > banker_score:
             print("Player bet wins!")
             if "Player" in bet.params:
-                print("User won!") 
+                print("\033[33mYou won!\033[0m")
+                print(f"You earned: {earnings} chips.")
                 dict["chips"] += earnings
             else:
-                print("Loss")
+                print("\033[31mYou lost.\033[0m")
         elif banker_score > player_score:
             print("Banker bet wins!")
             if "Banker" in bet.params:
-                print("User Won!")
+                print("\033[33mYou won!\033[0m")
+                print(f"You earned: {earnings} chips.")
                 dict["chips"] += earnings
             else:
-                print("Loss!")
+                print("\033[31mYou lost.\033[0m")
         else:
             print("It's a tie!")
             dict["chips"] += 60 * bet.ending.count("$")    
