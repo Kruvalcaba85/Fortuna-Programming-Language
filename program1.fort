@@ -1,6 +1,6 @@
+// simple hello world
 buy-in(100):
-    x = 5
-    call(x)$
+    call("Hello World!")$
     check()x
 stand
 

@@ -103,3 +103,7 @@ MulExpr:
 
 Factor:
     ID | INT | STRING | '(' Expression ')';  
+
+Comment:
+  /\/\/.*$/
+;

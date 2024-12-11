@@ -1,8 +1,9 @@
+// classic FizzBuzz
 buy-in(10000):
     For(i in range(1, 4)) {
         Poker(3)$
     }
-    
+
     For(i in range(1, 16)) {
         call("earning extra money!")$$$
         If(i % 3 == 0 and i % 5 == 0) {

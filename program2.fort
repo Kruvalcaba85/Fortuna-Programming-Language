@@ -1,0 +1,9 @@
+// example program showcasing roulettes 
+
+buy-in(1000):
+    Roulette roulette = [1, 2, 3, 4]
+
+    For(spin in range(1, 10)) {
+        roulette[0]$$
+    }
+stand
