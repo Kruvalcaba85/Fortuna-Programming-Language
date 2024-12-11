@@ -19,12 +19,17 @@ Pillars:
     '}';
 
 WhileLoop:
-    'While' '(' condition=Expression ')' '{' body*=Function '}';
+    'While' '(' condition=Expression ')' '{' 
+        body*=Function 
+    '}';
 
 IfStatement:
-    'If' '(' condition=Expression ')' '{' 
-        body*=Function 
-    '}' ('else' ':' body*=Function)?;
+    'If' '(' condition=Expression ')' '{'
+        body+=Function*
+    '}' ('else' '{'
+        else_body+=Function*
+    '}')?;
+
 
 Suite:
     body*=Function;
@@ -82,10 +87,16 @@ Frees:
     "x";
 
 Expression:
-    CompExpr;
+    BoolExpr;  
+
+BoolExpr:
+    BoolTerm (('and' | 'or') BoolTerm)*;  
+
+BoolTerm:
+    'not'? CompExpr;  
 
 CompExpr:
-    AddExpr ((' ' | '<' | '<=' | '>' | '>=' | '==' | '!=') AddExpr)*;
+    AddExpr (('<' | '<=' | '>' | '>=' | '==' | '!=') AddExpr)*;  
 
 AddExpr:
     MulExpr (('+' | '-') MulExpr)*;
@@ -94,4 +105,4 @@ MulExpr:
     Factor (('*' | '/') Factor)*;
 
 Factor:
-    ID | INT | STRING | '(' Expression ')';
+    ID | INT | STRING | '(' Expression ')';  

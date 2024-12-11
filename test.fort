@@ -3,9 +3,15 @@ buy-in(1000):
     For(i in range(0, 5)) {
         call("testing")$$$
     }
-    If(2 > 1) {
+    If(2 > 1 and 2 < 4) {
         call("entered if")$
-    } 
+    } else {
+        call("entered else")!
+    }
+    While(x == 5) {
+        call("hello")!
+        x = 1
+    }
     call("hi")!
     Roulette test = [1, 2, 3]
     test[0]$

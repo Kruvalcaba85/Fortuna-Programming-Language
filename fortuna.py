@@ -2,6 +2,7 @@ from textx import metamodel_from_file
 import time
 import sys
 import random
+import re
 from collections import Counter
 
 #loading our model from the given name
@@ -85,9 +86,14 @@ def interpret_for(for_loop, dict):
             for function in for_loop.body:
                 interpreter(function, dict)
 
+#allowing for comparisons
+def format_condition(condition):
+    condition = re.sub(r'([<>=!]=?|and|or|not)', r' \1 ', condition)
+    return condition
 #interpeter for while loops
 def interpret_while(while_loop, dict):
     while_cost = 20
+    formatted_condition = format_condition(while_loop.condition)
     condition = eval(while_loop.condition, {}, dict) #evaluate the given conditon
     while condition:
         dict["chips"] -= while_cost #cost is flat
@@ -95,22 +101,23 @@ def interpret_while(while_loop, dict):
             for function in while_loop.body:
                 interpreter(function, dict)
             # Reevaluate the condition in case it's changed in the loop body
-            condition = eval(while_loop.condition, {}, dict)
+            condition = eval(formatted_condition, {}, dict)
 
 #interpreter for if statments
 def interpret_if(if_statement, dict):
     if_cost = 30
-    condition = eval(if_statement.condition, {}, dict)
+    formatted_condition = format_condition(if_statement.condition)
+    condition = eval(formatted_condition, {}, dict)
     if condition:
         dict["chips"] -= if_cost
-        if check_chips(dict["chips"]):
-                for function in if_statement.body:
-                    interpreter(function, dict)
-    elif if_statement.else_body:
+        check_chips(dict["chips"])
+        for function in if_statement.body:
+            interpreter(function, dict)
+    elif hasattr(if_statement, 'else_body') and if_statement.else_body:
         dict["chips"] -= if_cost
-        if check_chips(dict["chips"]):
-            for function in if_statement.else_body:
-                interpreter(function, dict)
+        check_chips(dict["chips"])
+        for function in if_statement.else_body:
+            interpreter(function, dict)
 
 #initialization for variables, keep in dictionary
 def interpet_var(variable_declaration, dict):
