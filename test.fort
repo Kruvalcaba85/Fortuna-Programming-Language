@@ -1,7 +1,7 @@
 buy-in(1000):
     x = 5
     For(i in range(0, 5)) {
-        call("testing")$
+        call("testing")$$$
     }
     If(2 > 1) {
         call("entered if")$
