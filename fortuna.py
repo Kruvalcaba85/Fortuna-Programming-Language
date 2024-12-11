@@ -106,7 +106,6 @@ def interpret_if(if_statement, dict):
                 interpreter(function, dict)
 
 def interpet_var(variable_declaration, dict):
-    print("entered var")
     var_cost = 3
     value = variable_declaration.value
     dict[variable_declaration.name] = value
@@ -122,16 +121,16 @@ def interpret_call(call, dict):
         print("\033[35mBy Law:\033[0m")
         print(value)
         return
-    dict["chips"] -= 5
+    dict["chips"] -= 5 * call.ending.count("$")
     check_chips(dict["chips"])
     decision = random.randint(0 ,1)
     if decision == 1:
             print("\033[33mSuccessful Call!\033[0m")
             print(value)
             if call.ending.startswith("$"):
-                earnings = 5 * call.ending.count("$")
+                earnings = 10 * call.ending.count("$")
                 print(f"You earned {earnings} chips.")
-                dict["chips"] += 5 * call.ending.count("$")
+                dict["chips"] += earnings
             else:
                 print("Invalid ending character")
     else:
@@ -139,33 +138,54 @@ def interpret_call(call, dict):
                 
 
 def interpret_calc(calc, dict):
-    print(calc.calculation)
-    result = eval(str(calc.calculation), dict)
-    print(f"This was the result: {result}")
-    dice = result + 15
-    print(dice)
-    roll = random.randint(0, dice)
-    print(roll)
-    bet = calc.bet
-    if bet == "over" or bet == "under" or bet == "bullseye":
-        if roll > result:
-            print("Over!")
-            if bet == "over":
-                print("You win!")
-            else:
-                print("Loss!")
-        elif roll < result:
-            print("Under!")
-            if bet == "under":
-                print("You win!")
-            else:
-                print("Loss!")
-        else:
-            print("Bullseye!")
+    print("\033[32mCalculation!\033[0m")
+    if calc.ending == "!":
+        dict["chips"] -= 25
+        check_chips(dict["chips"])
+        result = eval(str(calc.calculation), {}, dict)
+        print("\033[35mBy Law:\033[0m")
         print(result)
+        return
+    
+    if calc.ending.startswith("$"):
+        dict["chips"] -= 10 * calc.ending.count("$")
+        result = eval(str(calc.calculation), dict)
+        dice = result + 15
+        roll = random.randint(0, dice)
+        bet = calc.bet
+        if bet == "over" or bet == "under" or bet == "bullseye":
+            if roll > result:
+                print("Over!")
+                if bet == "over":
+                    print("\033[33mYou guessed correctly!\033[0m")
+                    earnings = 20 * calc.ending.count("$")
+                    print(f"you earned: {earnings} chips")
+                    dict["chips"] += earnings
+                else:
+                    print("You guessed wrong!")
+            elif roll < result:
+                print("Under!")
+                if bet == "under":
+                    print("\033[33mYou guessed correctly!\033[0m")
+                    earnings = 20 * calc.ending.count("$")
+                    print(f"you earned: {earnings} chips")
+                    dict["chips"] += earnings
+                else:
+                    print("You guessed wrong!")
+            else:
+                print("Bullseye!")
+                print("\033[33mYou guessed correctly!\033[0m")
+                earnings = 50 * calc.ending.count("$")
+                print(f"you earned: {earnings} chips")
+                dict["chips"] += earnings
+            print(result)
+    else:
+        print("Invalid ending")
 
 
 def interpret_roulette(roulette, dict):
+    dict["chips"] -= 5
+    check_chips(dict["chips"])
     colors = []
 
     for i, element in enumerate(roulette.elements):
@@ -181,24 +201,41 @@ def interpret_roulette(roulette, dict):
     dict[roulette.name] = {"element": elements, "colors": colors}
 
 def interpret_access(access, dict):
-    name = access.array
-    index = eval(str(access.index), {}, dict)
-    if name in dict:
+    if access.ending == "!":
+        dict["chips"] -= 25
+        check_chips(dict["chips"])
+        print("By Law.")
+        name = access.array
         roulette = dict[name]
-        elements = roulette["element"]
-        index_colors = roulette["colors"]
-        if 0 <= index < len(elements):
-            element = elements[index]
-            color = index_colors[index]
+        elements = roulette["colors"]
+        index = eval(str(access.index), {}, dict)
+        print(f"{elements[index]}")
+        return
+    
+    if access.ending.startswith("$"):
+        dict["chips"] -= 5
+        check_chips(dict["chips"])
+        name = access.array
+        index = eval(str(access.index), {}, dict)
+        if name in dict:
+            roulette = dict[name]
+            elements = roulette["element"]
+            index_colors = roulette["colors"]
+            if 0 <= index < len(elements):
+                element = elements[index]
+                color = index_colors[index]
 
-            colors = ['green', 'red', 'black']
-            color_choice = random.choice(colors)
-            if color_choice == color:
-                print(f"{elements[index]}")
-            else:
-                print("Spin unsuccessful")
+                colors = ['green', 'red', 'black']
+                color_choice = random.choice(colors)
+                if color_choice == color:
+                    print("Sucessful spin!")
+                    print(f"{elements[index]}")
+                else:
+                    print("Spin unsuccessful.")
+        else:
+            print("Array does not exist")
     else:
-        print("Array does not exist")
+        print("Ending is incorrect.")
 
 #Interpretting Wheels
 def interpret_nonparam(nonparam):

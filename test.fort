@@ -8,9 +8,9 @@ buy-in(100):
     } 
     call("hi")!
     Roulette test = [1, 2, 3]
-    test[0]
-    wrong[0]
-    calc(2 * 2 + 1, bullseye)$
+    test[0]$
+    wrong[0]$
+    calc(2 * 2 + 1, over)$
     Test()$
     Poker(2)$
     Blackjack()$

@@ -50,13 +50,13 @@ Call:
     'call' '(' calling=STRING ')' ending=Endings;
 
 Calculation:
-    'calc' '(' calculation=Expression ',' bet=ID ')' Endings ;
+    'calc' '(' calculation=Expression ',' bet=ID ')' ending=Endings ;
 
 Roulette:
     'Roulette' name =ID '=' '[' elements +=Expression[','] ']';
 
 RouletteAccess:
-    array=ID '[' index=Expression ']';
+    array=ID '[' index=Expression ']' ending=Endings;
 
 Wheels:
     NonParamFunction | ParamFunction
@@ -70,7 +70,7 @@ ParamFunction:
 
 
 Endings:
-    Blinds | Laws ;
+    Blinds | Laws;
 
 Blinds:
     '$'+;
