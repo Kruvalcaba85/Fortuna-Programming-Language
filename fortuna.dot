@@ -11,75 +11,92 @@
     edge[dir=black,arrowtail=empty]
 
 
-1535498030832[ label="{BuyIn|chips: INT\l}"]
+2325705923648[ label="{BuyIn|chips: INT\l}"]
 
-1535498037168[ label="{*Function|}"]
+2325689430240[ label="{*Function|}"]
 
-1535498173568[ label="{*Pillars|}"]
+2325705924272[ label="{*Pillars|}"]
 
-1535498173328[ label="{ForLoop|var: ID\l}"]
+2325705923984[ label="{ForLoop|var: ID\l}"]
 
-1535498173376[ label="{WhileLoop|condition: Expression\l}"]
+2325705924368[ label="{WhileLoop|condition: Expression\l}"]
 
-1535498173472[ label="{IfStatement|condition: Expression\l}"]
+2325705928688[ label="{IfStatement|condition: Expression\l}"]
 
-1535498161136[ label="{Suite|}"]
+2325705919328[ label="{VariableDeclaration|name: ID\lvalue: Expression\l}"]
 
-1535498173616[ label="{VariableDeclaration|name: ID\lvalue: Expression\l}"]
+2325705922400[ label="{Range|start: INT\lend: INT\lstep: INT\l}"]
 
-1535498172080[ label="{UserFunctionDef|name: ID\lparams: optional\<list[ID]\>\l}"]
+2325705920912[ label="{*Instruments|}"]
 
-1535498173808[ label="{Returns|value: Expression\l}"]
+2325705919520[ label="{Call|calling: STRING\lending: Endings\l}"]
 
-1535498173856[ label="{Range|start: INT\lend: INT\lstep: INT\l}"]
+2325705918944[ label="{Calculation|calculation: Expression\lbet: ID\lending: Endings\l}"]
 
-1535498174000[ label="{*Instruments|}"]
+2325705917600[ label="{Roulette|name: ID\lelements: list[Expression]\l}"]
 
-1535498307488[ label="{Call|calling: Expression\l}"]
+2325705923696[ label="{RouletteAccess|array: ID\lindex: Expression\lending: Endings\l}"]
 
-1535498306624[ label="{Calculation|calculation: Expression\l}"]
+2325705923504[ label="{*Wheels|}"]
 
-1535498306288[ label="{Roulette|name: ID\lelements: list[Expression]\l}"]
+2325705923744[ label="{NonParamFunction|name: ID\lending: Endings\l}"]
 
-1535498306672[ label="{*Wheels|}"]
-
-1535498305808[ label="{NonParamFunction|name: ID\l}"]
-
-1535498305616[ label="{ParamFunction|name: ID\lparams: optional\<list[ID]\>\l}"]
+2325705931232[ label="{ParamFunction|name: ID\lparams: optional\<list[Expression]\>\lending: Endings\l}"]
 
 
 
-1535498030832 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="functions 0..*"]
-1535498037168 -> 1535498173568 [dir=back]
-1535498037168 -> 1535498174000 [dir=back]
-1535498037168 -> 1535498306672 [dir=back]
-1535498173568 -> 1535498173328 [dir=back]
-1535498173568 -> 1535498173376 [dir=back]
-1535498173568 -> 1535498173472 [dir=back]
-1535498173568 -> 1535498173616 [dir=back]
-1535498173568 -> 1535498173808 [dir=back]
-1535498173328 -> 1535498173856[arrowtail=diamond, dir=both, headlabel="range_expr "]
-1535498173328 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
-1535498173376 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
-1535498161136 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
-1535498172080 -> 1535498037168[arrowtail=diamond, dir=both, headlabel="body 0..*"]
-1535498174000 -> 1535498307488 [dir=back]
-1535498174000 -> 1535498306624 [dir=back]
-1535498174000 -> 1535498306288 [dir=back]
-1535498306672 -> 1535498305808 [dir=back]
-1535498306672 -> 1535498305616 [dir=back]
+2325705923648 -> 2325689430240[arrowtail=diamond, dir=both, headlabel="functions 0..*"]
+2325689430240 -> 2325705924272 [dir=back]
+2325689430240 -> 2325705920912 [dir=back]
+2325689430240 -> 2325705923504 [dir=back]
+2325705924272 -> 2325705923984 [dir=back]
+2325705924272 -> 2325705924368 [dir=back]
+2325705924272 -> 2325705928688 [dir=back]
+2325705924272 -> 2325705919328 [dir=back]
+2325705923984 -> 2325705922400[arrowtail=diamond, dir=both, headlabel="range_expr "]
+2325705923984 -> 2325689430240[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+2325705924368 -> 2325689430240[arrowtail=diamond, dir=both, headlabel="body 0..*"]
+2325705928688 -> 2325689430240[arrowtail=diamond, dir=both, headlabel="body 1..*"]
+2325705928688 -> 2325689430240[arrowtail=diamond, dir=both, headlabel="else_body 1..*"]
+2325705920912 -> 2325705919520 [dir=back]
+2325705920912 -> 2325705918944 [dir=back]
+2325705920912 -> 2325705917600 [dir=back]
+2325705920912 -> 2325705923696 [dir=back]
+2325705923504 -> 2325705923744 [dir=back]
+2325705923504 -> 2325705931232 [dir=back]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
+		<td><b>AddExpr</b></td><td>ID|INT|STRING|( not? AddExpr (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)* (and|or BoolTerm)* ) (*|/ Factor)* (+|- MulExpr)*</td>
+	</tr>
+	<tr>
 		<td><b>Blinds</b></td><td>Blinds</td>
+	</tr>
+	<tr>
+		<td><b>BoolExpr</b></td><td>not? ID|INT|STRING|( BoolExpr ) (*|/ Factor)* (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)* (and|or BoolTerm)*</td>
+	</tr>
+	<tr>
+		<td><b>BoolTerm</b></td><td>not? ID|INT|STRING|( BoolTerm (and|or BoolTerm)* ) (*|/ Factor)* (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)*</td>
+	</tr>
+	<tr>
+		<td><b>CompExpr</b></td><td>ID|INT|STRING|( not? CompExpr (and|or BoolTerm)* ) (*|/ Factor)* (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)*</td>
 	</tr>
 	<tr>
 		<td><b>Endings</b></td><td></td>
 	</tr>
 	<tr>
-		<td><b>Expression</b></td><td>[a-zA-Z0-9_+\-*\/\(\)]+</td>
+		<td><b>Expression</b></td><td>not? ID|INT|STRING|( BoolExpr ) (*|/ Factor)* (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)* (and|or BoolTerm)*</td>
+	</tr>
+	<tr>
+		<td><b>Factor</b></td><td>ID|INT|STRING|( not? Factor (*|/ Factor)* (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)* (and|or BoolTerm)* )</td>
+	</tr>
+	<tr>
+		<td><b>Frees</b></td><td>x</td>
 	</tr>
 	<tr>
 		<td><b>Laws</b></td><td>!</td>
+	</tr>
+	<tr>
+		<td><b>MulExpr</b></td><td>ID|INT|STRING|( not? MulExpr (+|- MulExpr)* (&lt;|&lt;=|&gt;|&gt;=|==|!= AddExpr)* (and|or BoolTerm)* ) (*|/ Factor)*</td>
 	</tr>
 </table> >]
 

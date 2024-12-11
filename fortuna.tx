@@ -10,7 +10,7 @@ Function:
 
 
 Pillars:
-    ForLoop | WhileLoop | IfStatement | VariableDeclaration | Returns
+    ForLoop | WhileLoop | IfStatement | VariableDeclaration
 ;
 
  ForLoop:
@@ -29,7 +29,7 @@ IfStatement:
     '}' ('else' '{'
         else_body+=Function*
     '}')?;
-    
+
 VariableDeclaration:
     name=ID '=' value=Expression;
 
