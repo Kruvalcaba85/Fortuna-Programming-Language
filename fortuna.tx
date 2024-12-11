@@ -63,10 +63,10 @@ Wheels:
 ;
 
 NonParamFunction:
-    name=ID '(' ')' Endings;
+    name=ID '(' ')' ending=Endings;
 
 ParamFunction:
-    name=ID '(' params*=Expression[','] ')' Endings;
+    name=ID '(' params*=Expression[','] ')' ending=Endings;
 
 
 Endings:

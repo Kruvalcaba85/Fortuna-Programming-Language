@@ -20,7 +20,7 @@ def start():
     #file_name = input("Please give us the name of your Fortuna File: ")
 
     model = load_model("yes")
-    user_chips = 120
+    user_chips = 2000
     if model.chips <= user_chips:
         dict = {"chips": model.chips} # dictionary that will track our variables, initialize chips
         dict["balance"] = user_chips - model.chips
@@ -245,7 +245,7 @@ def interpret_nonparam(nonparam, dict):
     if name == "Test":
         print("Hello!")
     elif name == "Blackjack":
-        black_jack()
+        black_jack(nonparam, dict)
     elif name == "check":
         check_balance(dict)
 
@@ -256,9 +256,9 @@ def interpret_param(param, dict):
     if name == "Poker":
         interpret_Poker(param, dict)
     elif name == "HorseRace":
-        horse_Race(param)
+        horse_Race(param, dict)
     elif name == "Baccarat":
-        baccarat(param)
+        baccarat(param, dict)
     elif name == "call":
         interpret_call(param, dict)
     else:
@@ -269,21 +269,29 @@ def check_balance(dict):
     chips = dict["chips"]
     user_balance = dict["balance"] + chips
     print(f"You have earned: {chips} chips. Your total balance is {user_balance}.")
+
 # Poker Implementation
 def interpret_Poker(param, dict):
-    hands = param.params[0]
-    deck = create_deck()
-    shuffle_deck(deck)
-        
-    # Deal hands
-    hands = deal_hands(deck, hands)
-        
-    # Print each player's hand
-    for i, hand in enumerate(hands, start=1):
-        print(f"Player {i}'s hand: {', '.join(hand)}")
-        
-    # Compare hands and determine the winner
-    compare_hands(hands)
+    if param.ending.startswith("$"):
+        dict["chips"] -= 50 * param.ending.count("$")
+        check_chips(dict["chips"])
+        poker_payout = 100
+        earnings = poker_payout * param.ending.count("$")
+        hands = param.params[0]
+        deck = create_deck()
+        shuffle_deck(deck)
+            
+        # Deal hands
+        hands = deal_hands(deck, hands)
+            
+        # Print each player's hand
+        for i, hand in enumerate(hands, start=1):
+            print(f"Player {i}'s hand: {', '.join(hand)}")
+            
+        # Compare hands and determine the winner
+        compare_hands(hands, dict, earnings)
+    else:
+        print("wrong ending.")
     
 def create_deck():
     suits = ['H', 'D', 'C', 'S']
@@ -322,7 +330,7 @@ def rank_hand(hand):
         return (0, card_ranks)  # High card
 
 # Step 5: Compare hands
-def compare_hands(hands):
+def compare_hands(hands, dict, earnings):
     hand_rankings = []
 
     for hand in hands:
@@ -349,83 +357,106 @@ def compare_hands(hands):
     print(f"The hand type is: {hand_type[winning_rank[0]]}")
 
     if hands[0] == winning_hand:
-        print("User won!")
+        print("You won!")
+        dict["chips"] += earnings
+
     else:
-        print("User lost!")
+        print("You lost!")
 
 # Black jack Implementation
-def black_jack():
-    player_value = random.randint(2, 21)
-    dealer_value = random.randint(2, 21)
+def black_jack(nonparam, dict):
+    if nonparam.ending.startswith("$"):
+        dict["chips"] -= 75 * nonparam.ending.count("$")
+        check_chips(dict["chips"])
+        black_jack_payout = 150
+        earnings = black_jack_payout * nonparam.ending.count("$")
+        player_value = random.randint(2, 21)
+        dealer_value = random.randint(2, 21)
 
-    print(f"{player_value} and {dealer_value}")
+        print(f"{player_value} and {dealer_value}")
 
-    if player_value == 21 and dealer_value == 21:
-        print("Tie!")
-        return
-    elif player_value == 21:
-        print("BlackJack!")
-        return
-    elif dealer_value == 21:
-        print("Dealer Blackjack!")
-        return
+        if player_value == 21 and dealer_value == 21:
+            print("Tie!")
+            dict["chips"] += 75
+            return
+        elif player_value == 21:
+            print("BlackJack!")
+            dict["chips"] += earnings
+            return
+        elif dealer_value == 21:
+            print("Dealer Blackjack!")
+            return
 
-    while player_value < 17:
-            player_value += random.randint(1, 11)
-    
-    print(f"Player value: {player_value} ")
-    if player_value == 21:
-        print("Blackjack!")
-        return
-    elif player_value > 21:
-        print("Bust!")
-        return
-    
-    while dealer_value < 17:
-        dealer_value += random.randint(1, 11)
-    
-    print(f"Delear value: {dealer_value}")
-    if dealer_value == 21:
-        print("Dealer Blackjack!")
-        return
-    elif dealer_value > 21:
-        print("Dealear Bust!")
-        return
-    
-    if player_value > dealer_value:
-        print("Player win!")
-    elif player_value == dealer_value:
-        print("Tie!")
-    else:
-        print("Dealer Won!")
-
- # Horse Race Implmentation
-def horse_Race(player_horse):
-   num_horses = 7
-   horses = [0] * num_horses
-   race_distance = 25
-
-   print("Horse Race has begun!")
-
-    #keep race going
-   while True:
-    #update position of horse
-    for i in range(num_horses):
-        horses[i] += random.randint(1, 3)
-
-    for i, position in enumerate(horses):
-        if position >= race_distance:
-            print(f"Horse {i + 1} beats the race at {position} meters!")
-            print(f"Horse {i + 1} wins!")
-            if i + 1 == player_horse:
-                print("Player won!")
-            else:
-                print("player lost!")
+        while player_value < 17:
+                player_value += random.randint(1, 11)
+        
+        print(f"Player value: {player_value} ")
+        if player_value == 21:
+            print("Blackjack!")
+            print("Win!")
+            dict["chips"] += earnings
+            return
+        elif player_value > 21:
+            print("Bust!")
             return
         
-    winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
-    print(f"\nHorse {winning_horse + 1} is in the lead at {highest_position} meters...")
-    time.sleep(0.2)
+        while dealer_value < 17:
+            dealer_value += random.randint(1, 11)
+        
+        print(f"Delear value: {dealer_value}")
+        if dealer_value == 21:
+            print("Dealer Blackjack!")
+            return
+        elif dealer_value > 21:
+            print("Dealear Bust!")
+            dict["chips"] += earnings
+            return
+        
+        if player_value > dealer_value:
+            print("Player win!")
+            dict["chips"] += earnings
+        elif player_value == dealer_value:
+            print("Tie!")
+            dict["chips"] += 75
+        else:
+            print("Dealer Won!")
+    else:
+        print("wrong ending.")
+
+ # Horse Race Implmentation
+def horse_Race(player_horse, dict):
+   if player_horse.ending.startswith("$"):
+    dict["chips"] -= 100 * player_horse.ending.count("$")
+    check_chips(dict["chips"])
+    horse_payout = 200
+    earnings = horse_payout * player_horse.ending.count("$")
+    num_horses = 7
+    horses = [0] * num_horses
+    race_distance = 25
+
+    print("Horse Race has begun!")
+
+        #keep race going
+    while True:
+        #update position of horse
+        for i in range(num_horses):
+            horses[i] += random.randint(1, 3)
+
+        for i, position in enumerate(horses):
+            if position >= race_distance:
+                print(f"Horse {i + 1} beats the race at {position} meters!")
+                print(f"Horse {i + 1} wins!")
+                print(player_horse.params)
+                if i + 1 in player_horse.params:
+                    print("Player won!")
+                    dict["chips"] += earnings
+                else:
+                    print("player lost!")
+                return
+            
+        winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
+        print(f"\nHorse {winning_horse + 1} is in the lead at {highest_position} meters...")
+        time.sleep(0.2)
 
 #baccarat implementation
 def draw_card():
@@ -436,46 +467,54 @@ def calculate_score(hand):
     """Calculate the Baccarat score of a hand."""
     return sum(hand) % 10
 
-def baccarat(bet):
-    # Initial hands
-    player_hand = [draw_card(), draw_card()]
-    banker_hand = [draw_card(), draw_card()]
+def baccarat(bet, dict):
+    if bet.ending.startswith("$"):
+        dict["chips"] -= 60 * bet.ending.count("$")
+        check_chips(dict["chips"])
+        payout = 120
+        earnings = payout * bet.ending.count("$")
+        # Initial hands
+        player_hand = [draw_card(), draw_card()]
+        banker_hand = [draw_card(), draw_card()]
 
-    print(f"Player's cards: {player_hand}, Score: {calculate_score(player_hand)}")
-    print(f"Banker's cards: {banker_hand}, Score: {calculate_score(banker_hand)}")
+        print(f"Player's cards: {player_hand}, Score: {calculate_score(player_hand)}")
+        print(f"Banker's cards: {banker_hand}, Score: {calculate_score(banker_hand)}")
 
-    player_score = calculate_score(player_hand)
-    banker_score = calculate_score(banker_hand)
-
-    # Simplified third card rule
-    if player_score < 6:
-        player_hand.append(draw_card())
         player_score = calculate_score(player_hand)
-        print(f"Player draws a card: {player_hand[-1]}. New score: {player_score}")
-
-    if banker_score < 6:
-        banker_hand.append(draw_card())
         banker_score = calculate_score(banker_hand)
-        print(f"Banker draws a card: {banker_hand[-1]}. New score: {banker_score}")
 
-    print(f"Final Player's hand: {player_hand}, Score: {player_score}")
-    print(f"Final Banker's hand: {banker_hand}, Score: {banker_score}")
+        # Simplified third card rule
+        if player_score < 6:
+            player_hand.append(draw_card())
+            player_score = calculate_score(player_hand)
+            print(f"Player draws a card: {player_hand[-1]}. New score: {player_score}")
 
-    # Determine winner
-    if player_score > banker_score:
-        print("Player bet wins!")
-        if bet == "Player":
-            print("User won!") 
+        if banker_score < 6:
+            banker_hand.append(draw_card())
+            banker_score = calculate_score(banker_hand)
+            print(f"Banker draws a card: {banker_hand[-1]}. New score: {banker_score}")
+
+        print(f"Final Player's hand: {player_hand}, Score: {player_score}")
+        print(f"Final Banker's hand: {banker_hand}, Score: {banker_score}")
+
+        # Determine winner
+        if player_score > banker_score:
+            print("Player bet wins!")
+            if "Player" in bet.params:
+                print("User won!") 
+                dict["chips"] += earnings
+            else:
+                print("Loss")
+        elif banker_score > player_score:
+            print("Banker bet wins!")
+            if "Banker" in bet.params:
+                print("User Won!")
+                dict["chips"] += earnings
+            else:
+                print("Loss!")
         else:
-            print("Loss")
-    elif banker_score > player_score:
-        print("Banker bet wins!")
-        if bet == "Banker":
-            print("User Won!")
-        else:
-            print("Loss!")
-    else:
-        print("It's a tie!")    
+            print("It's a tie!")
+            dict["chips"] += 60 * bet.ending.count("$")    
            
 
         
