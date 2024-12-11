@@ -21,7 +21,7 @@ def start():
     file_name = input("Please give us the name of your Fortuna File: ")
 
     model = load_model(file_name)
-    user_chips = 2000 #in an real scenario, this would a user's money balance that they have put in.
+    user_chips = 2000 + model.chips #in an real scenario, this would a user's money balance that they have put in.
     if model.chips <= user_chips:
         dict = {"chips": model.chips} # dictionary that will track our variables, initialize chips
         dict["balance"] = user_chips - model.chips #also keep track of the user's remaining balance
@@ -93,36 +93,74 @@ def format_condition(condition):
 #interpeter for while loops
 def interpret_while(while_loop, dict):
     while_cost = 20
-    formatted_condition = format_condition(while_loop.condition)
-    condition = eval(while_loop.condition, {}, dict) #evaluate the given conditon
+    for var in dict.keys():
+        if var in while_loop.condition:
+            replaced = while_loop.condition.replace(var, str(dict[var]))
+            formatted_condition = format_condition(replaced)
+        else:
+          formatted_condition = format_condition(while_loop.condition)  
+    
+    print(formatted_condition)
+    condition = eval(formatted_condition, {}, dict) #evaluate the given conditon
     while condition:
         dict["chips"] -= while_cost #cost is flat
         if check_chips(dict["chips"]):
             for function in while_loop.body:
                 interpreter(function, dict)
-            # Reevaluate the condition in case it's changed in the loop body
             condition = eval(formatted_condition, {}, dict)
 
 #interpreter for if statments
 def interpret_if(if_statement, dict):
     if_cost = 30
-    formatted_condition = format_condition(if_statement.condition)
+
+    # Evaluate the main if condition
+    for var in dict.keys():
+        if var in if_statement.condition:
+            replaced = if_statement.condition.replace(var, str(dict[var]))
+            formatted_condition = format_condition(replaced)
+            break
+    else:
+        formatted_condition = format_condition(if_statement.condition)
+
     condition = eval(formatted_condition, {}, dict)
+
+    # If the main if condition is true
     if condition:
         dict["chips"] -= if_cost
         check_chips(dict["chips"])
         for function in if_statement.body:
             interpreter(function, dict)
-    elif hasattr(if_statement, 'else_body') and if_statement.else_body:
+        return
+
+    # Evaluate all elif conditions
+    for elif_cond, elif_body in zip(if_statement.elseif, if_statement.elif_body):
+        for var in dict.keys():
+            if var in elif_cond:
+                replaced = elif_cond.replace(var, str(dict[var]))
+                formatted_elif = format_condition(replaced)
+                break
+        else:
+            formatted_elif = format_condition(elif_cond)
+
+        elif_condition = eval(formatted_elif, {}, dict)
+
+        if elif_condition:
+            dict["chips"] -= if_cost
+            check_chips(dict["chips"])
+            # Treat elif_body as a single callable object
+            interpreter(elif_body, dict)
+            return
+
+    # If no elif conditions were true, check for else
+    if hasattr(if_statement, 'else_body') and if_statement.else_body:
         dict["chips"] -= if_cost
         check_chips(dict["chips"])
         for function in if_statement.else_body:
             interpreter(function, dict)
-
 #initialization for variables, keep in dictionary
 def interpet_var(variable_declaration, dict):
     var_cost = 5
-    value = variable_declaration.value
+    value = eval(str(variable_declaration.value), {}, dict)
     dict[variable_declaration.name] = value
     dict["chips"] -= var_cost
     check_chips(dict["chips"])
@@ -140,6 +178,8 @@ def interpet_var(variable_declaration, dict):
 #calls is how you print, however it is a coin toss. If you win the coin toss, you get the call
 def interpret_call(call, dict):
     value = call.calling
+    if value in dict.keys():
+        value = call.calling.replace(value, str(dict[value]))
     if call.ending == "!": #checks if lawful call, if so, avoid game and just print
         dict["chips"] -= 75
         check_chips(dict["chips"])
@@ -323,7 +363,7 @@ def interpret_Poker(param, dict):
     if param.ending.startswith("$"):
         dict["chips"] -= 50 * param.ending.count("$") * param.params[0] #account for number of competing hands
         check_chips(dict["chips"])
-        poker_payout = 100
+        poker_payout = 1000
         earnings = poker_payout * param.ending.count("$") * param.params[0]
         hands = param.params[0]
         deck = create_deck()

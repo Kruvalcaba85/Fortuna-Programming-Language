@@ -26,7 +26,11 @@ WhileLoop:
 IfStatement:
     'If' '(' condition=Expression ')' '{'
         body+=Function*
-    '}' ('else' '{'
+    '}'
+    ('elif' '(' elseif=Expression ')' '{'
+        elif_body+=Function*
+    '}')*
+    ('else' '{'
         else_body+=Function*
     '}')?;
 
@@ -42,7 +46,10 @@ Instruments:
 ;
 
 Call:
-    'call' '(' calling=STRING ')' ending=Endings;
+    'call' '(' calling=Calling ')' ending=Endings;
+
+Calling:
+    STRING | ID;
 
 Calculation:
     'calc' '(' calculation=Expression ',' bet=ID ')' ending=Endings ;
@@ -92,7 +99,7 @@ AddExpr:
     MulExpr (('+' | '-') MulExpr)*;
 
 MulExpr:
-    Factor (('*' | '/') Factor)*;
+    Factor (('*' | '/' | '%') Factor)*;
 
 Factor:
     ID | INT | STRING | '(' Expression ')';  

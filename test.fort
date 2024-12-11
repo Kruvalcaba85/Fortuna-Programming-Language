@@ -3,21 +3,24 @@ buy-in(1000):
     For(i in range(0, 5)) {
         call("testing")$$$
     }
-    If(2 > 1 and 2 < 4) {
+    If(x < 1 and 2 < 4) {
         call("entered if")$
+    } elif(x < 3){
+        call("entered elif")!
+    } elif(x > 4) {
+        call("entered second elif!")!
     } else {
-        call("entered else")!
+        call("entered else!")!
     }
-    While(x == 5) {
+    While(x != 1) {
         call("hello")!
-        x = 1
+        x = x - 1
     }
     call("hi")!
     Roulette test = [1, 2, 3]
     test[0]$
     wrong[0]$
     calc(2 * 2 + 1, over)$
-    Test()$
     Poker(2)$
     Blackjack()$
     HorseRace(2)$

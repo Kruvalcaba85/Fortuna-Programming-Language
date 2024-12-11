@@ -1,0 +1,6 @@
+buy-in(100):
+    x = 5
+    call(x)$
+    check()x
+stand
+
