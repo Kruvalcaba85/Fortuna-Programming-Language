@@ -29,19 +29,9 @@ IfStatement:
     '}' ('else' '{'
         else_body+=Function*
     '}')?;
-
-
-Suite:
-    body*=Function;
-
+    
 VariableDeclaration:
     name=ID '=' value=Expression;
-
-UserFunctionDef:
-    name=ID '(' params*=ID[','] ')' '{' body*=Function '}';
-
-Returns:
-    'Return' value=Expression;   
 
 Range:
     'range' '(' start=INT ',' end=INT (',' step=INT)? ')';
