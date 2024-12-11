@@ -22,7 +22,9 @@ WhileLoop:
     'While' '(' condition=Expression ')' '{' body*=Function '}';
 
 IfStatement:
-    'If' '(' condition=Expression ')' '{' body*=Function '}' ('else' ':' body*=Function)?;
+    'If' '(' condition=Expression ')' '{' 
+        body*=Function 
+    '}' ('else' ':' body*=Function)?;
 
 Suite:
     body*=Function;
@@ -41,17 +43,20 @@ Range:
 
 
 Instruments:
-    Call | Calculation | Roulette
+    Call | Calculation | Roulette | RouletteAccess
 ;
 
 Call:
-    'call' '(' calling=Expression ')' Endings;
+    'call' '(' calling=STRING ')' ending=Endings;
 
 Calculation:
     'calc' '(' calculation=Expression ',' bet=ID ')' Endings ;
 
 Roulette:
     'Roulette' name =ID '=' '[' elements +=Expression[','] ']';
+
+RouletteAccess:
+    array=ID '[' index=Expression ']';
 
 Wheels:
     NonParamFunction | ParamFunction
@@ -74,7 +79,10 @@ Laws:
     '!';
 
 Expression:
-    AddExpr;
+    CompExpr;
+
+CompExpr:
+    AddExpr ((' ' | '<' | '<=' | '>' | '>=' | '==' | '!=') AddExpr)*;
 
 AddExpr:
     MulExpr (('+' | '-') MulExpr)*;
@@ -83,7 +91,4 @@ MulExpr:
     Factor (('*' | '/') Factor)*;
 
 Factor:
-    INT | ID | '(' Expression ')';
-
-
-
+    ID | INT | STRING | '(' Expression ')';

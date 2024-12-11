@@ -37,21 +37,23 @@ def interpreter(function, dict):
     function_name = function.__class__.__name__
     if function_name == "ForLoop":
         interpret_for(function, dict)
-    if function_name == "WhileLoop":
+    elif function_name == "WhileLoop":
         interpret_while(function, dict)
-    if function_name == "IfStatement":
+    elif function_name == "IfStatement":
         interpret_if(function, dict)
-    if function_name == "VariableDeclaration":
+    elif function_name == "VariableDeclaration":
         interpet_var(function, dict)
-    if function_name == "Call":
-        interpret_call(function)
-    if function_name == "Calculation":
+    elif function_name == "Call":
+        interpret_call(function, dict)
+    elif function_name == "Calculation":
         interpret_calc(function, dict)
-    if function_name == "Roulette":
+    elif function_name == "Roulette":
         interpret_roulette(function, dict)
-    if function_name == "NonParamFunction":
+    elif function_name == "RouletteAccess":
+        interpret_access(function, dict)
+    elif function_name == "NonParamFunction":
         interpret_nonparam(function)
-    if function_name == "ParamFunction":
+    elif function_name == "ParamFunction":
         interpret_param(function, dict)
 
 #interpetting pillars
@@ -90,8 +92,11 @@ def interpret_if(if_statement, dict):
     print(if_statement.condition)
     condition = eval(if_statement.condition, {}, dict)
     if condition:
+        print("entered here")
         dict["chips"] -= if_cost
         if check_chips(dict["chips"]):
+                print("entered here?")
+                print(if_statement.body)
                 for function in if_statement.body:
                     interpreter(function, dict)
     elif if_statement.else_body:
@@ -109,28 +114,47 @@ def interpet_var(variable_declaration, dict):
     check_chips(dict["chips"])
 
 #interpreting instruments
-def interpret_call(call):
+def interpret_call(call, dict):
     value = call.calling
-    decision = random.randint(0 ,1)
-    print(f"This was the decision: {decision}")
-    if decision == 1:
+    if call.ending == "!":
+        dict["chips"] -= 25
+        check_chips(dict["chips"])
+        print("\033[35mBy Law:\033[0m")
         print(value)
+        return
+    dict["chips"] -= 5
+    check_chips(dict["chips"])
+    decision = random.randint(0 ,1)
+    if decision == 1:
+            print("\033[33mSuccessful Call!\033[0m")
+            print(value)
+            if call.ending.startswith("$"):
+                earnings = 5 * call.ending.count("$")
+                print(f"You earned {earnings} chips.")
+                dict["chips"] += 5 * call.ending.count("$")
+            else:
+                print("Invalid ending character")
+    else:
+        print("\033[31mUnsuccessful Call.\033[0m")
+                
 
 def interpret_calc(calc, dict):
-    result = eval(calc.calculation, {}, dict)
+    print(calc.calculation)
+    result = eval(str(calc.calculation), dict)
+    print(f"This was the result: {result}")
     dice = result + 15
     print(dice)
     roll = random.randint(0, dice)
     print(roll)
     bet = calc.bet
     if bet == "over" or bet == "under" or bet == "bullseye":
-        if roll >= result:
+        if roll > result:
             print("Over!")
             if bet == "over":
                 print("You win!")
             else:
                 print("Loss!")
-        elif roll <= result:
+        elif roll < result:
             print("Under!")
             if bet == "under":
                 print("You win!")
@@ -140,11 +164,41 @@ def interpret_calc(calc, dict):
             print("Bullseye!")
         print(result)
 
+
 def interpret_roulette(roulette, dict):
+    colors = []
+
+    for i, element in enumerate(roulette.elements):
+        if i == 0:
+            colors.append("green")
+        elif i % 2 == 1:
+            colors.append("red")
+        else:
+            colors.append("black")
     # Evaluate each expression in the elements list
     elements = [eval(str(element), {}, dict) for element in roulette.elements]
     # Store the array in the dictionary using the given name
-    dict[roulette.name] = elements
+    dict[roulette.name] = {"element": elements, "colors": colors}
+
+def interpret_access(access, dict):
+    name = access.array
+    index = eval(str(access.index), {}, dict)
+    if name in dict:
+        roulette = dict[name]
+        elements = roulette["element"]
+        index_colors = roulette["colors"]
+        if 0 <= index < len(elements):
+            element = elements[index]
+            color = index_colors[index]
+
+            colors = ['green', 'red', 'black']
+            color_choice = random.choice(colors)
+            if color_choice == color:
+                print(f"{elements[index]}")
+            else:
+                print("Spin unsuccessful")
+    else:
+        print("Array does not exist")
 
 #Interpretting Wheels
 def interpret_nonparam(nonparam):
@@ -157,12 +211,15 @@ def interpret_nonparam(nonparam):
 
 def interpret_param(param, dict):
     name = param.name
+    print(name)
     if name == "Poker":
         interpret_Poker(param, dict)
     elif name == "HorseRace":
         horse_Race(param)
     elif name == "Baccarat":
         baccarat(param)
+    elif name == "call":
+        interpret_call(param, dict)
     else:
         print("Still worked!")
 
@@ -323,7 +380,7 @@ def horse_Race(player_horse):
         
     winning_horse, highest_position = max(enumerate(horses), key=lambda x: x[1])
     print(f"\nHorse {winning_horse + 1} is in the lead at {highest_position} meters...")
-    time.sleep(2)
+    time.sleep(0.2)
 
 #baccarat implementation
 def draw_card():
@@ -367,7 +424,7 @@ def baccarat(bet):
         else:
             print("Loss")
     elif banker_score > player_score:
-        print("Banker wins!")
+        print("Banker bet wins!")
         if bet == "Banker":
             print("User Won!")
         else:

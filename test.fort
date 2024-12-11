@@ -1,12 +1,16 @@
 buy-in(100):
     x = 5
     For(i in range(0, 5)) {
-        call(testing)$
+        call("testing")$
     }
-    If(x) {} 
-    call(hi)$
+    If(2 > 1) {
+        call("entered if")$
+    } 
+    call("hi")!
     Roulette test = [1, 2, 3]
-    calc(5 + 1, bullseye)$
+    test[0]
+    wrong[0]
+    calc(2 * 2 + 1, bullseye)$
     Test()$
     Poker(2)$
     Blackjack()$
