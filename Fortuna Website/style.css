@@ -1,0 +1,67 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    background-color: purple;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    font-size: large
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+header h1 {
+    font-size: 7em;
+    color: goldenrod;
+}
+
+header p {
+    font-size: 2em;
+    color: white;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #0077cc;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul li {
+    padding: 5px 0;
+}
+
+pre {
+    background-color: #282c34;
+    color: #f1f1f1;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9em;
+}
