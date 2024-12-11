@@ -70,13 +70,16 @@ ParamFunction:
 
 
 Endings:
-    Blinds | Laws;
+    Blinds | Laws | Frees;
 
 Blinds:
     '$'+;
 
 Laws:
     '!';
+
+Frees:
+    "x";
 
 Expression:
     CompExpr;

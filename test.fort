@@ -16,4 +16,5 @@ buy-in(100):
     Blackjack()$
     HorseRace(2)$
     Baccarat(Player)$
+    check()x
 stand

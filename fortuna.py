@@ -23,6 +23,8 @@ def start():
     user_chips = 120
     if model.chips <= user_chips:
         dict = {"chips": model.chips} # dictionary that will track our variables, initialize chips
+        dict["balance"] = user_chips - model.chips
+        print(f"You have entered the program with {dict["chips"]} chips. Your remaning balance is: {dict["balance"]}")
         for function in model.functions:
             interpreter(function, dict) #main interpreter
 
@@ -52,7 +54,7 @@ def interpreter(function, dict):
     elif function_name == "RouletteAccess":
         interpret_access(function, dict)
     elif function_name == "NonParamFunction":
-        interpret_nonparam(function)
+        interpret_nonparam(function, dict)
     elif function_name == "ParamFunction":
         interpret_param(function, dict)
 
@@ -238,12 +240,14 @@ def interpret_access(access, dict):
         print("Ending is incorrect.")
 
 #Interpretting Wheels
-def interpret_nonparam(nonparam):
+def interpret_nonparam(nonparam, dict):
     name = nonparam.name
     if name == "Test":
         print("Hello!")
     elif name == "Blackjack":
         black_jack()
+    elif name == "check":
+        check_balance(dict)
 
 
 def interpret_param(param, dict):
@@ -261,6 +265,10 @@ def interpret_param(param, dict):
         print("Still worked!")
 
 
+def check_balance(dict):
+    chips = dict["chips"]
+    user_balance = dict["balance"] + chips
+    print(f"You have earned: {chips} chips. Your total balance is {user_balance}.")
 # Poker Implementation
 def interpret_Poker(param, dict):
     hands = param.params[0]
